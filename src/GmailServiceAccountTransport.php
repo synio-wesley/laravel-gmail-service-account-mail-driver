@@ -8,6 +8,7 @@ use Google\Service\Gmail\Message;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 use Symfony\Component\Mime\MessageConverter;
+use Synio\GmailServiceAccountMailDriver\Exceptions\AuthConfigNotFoundException;
 use Synio\GmailServiceAccountMailDriver\Exceptions\InvalidGrantException;
 use Synio\GmailServiceAccountMailDriver\Exceptions\SenderNotFoundException;
 
@@ -22,9 +23,18 @@ class GmailServiceAccountTransport extends AbstractTransport
     {
         parent::__construct();
 
+        $path = config('services.gmail_service_account.google_application_credentials', env('GMAIL_SERVICE_ACCOUNT_GOOGLE_APPLICATION_CREDENTIALS'));
+        if (!is_file($path)) {
+            // Try relative path if absolute path cannot be found
+            $path = base_path($path);
+        }
+        if (!is_file($path)) {
+            throw new AuthConfigNotFoundException();
+        }
+
         if ($this->apiClient === null) {
             $this->apiClient = new Client();
-            $this->apiClient->setAuthConfig(config('services.gmail_service_account.google_application_credentials'));
+            $this->apiClient->setAuthConfig($path);
             $this->apiClient->setApplicationName(config('app.name'));
             $this->apiClient->setScopes(['https://www.googleapis.com/auth/gmail.send']);
         }
@@ -39,16 +49,6 @@ class GmailServiceAccountTransport extends AbstractTransport
      */
     protected function doSend(SentMessage $message): void
     {
-        // TODO: test doSend method somehow (but mock Client, Gmail)
-        // TODO: README
-
-        // TODO: publish package?
-        // TODO: use package
-        // TODO: replace Mail app password with list of allowed senders
-        // TODO: add From selector for step
-        // TODO: add CC, BCC fields for step
-        // TODO: ability to override From, CC, BCC before completing step
-
         $email = MessageConverter::toEmail($message->getOriginalMessage());
 
         if (!$email->getSender() && empty($email->getFrom())) {

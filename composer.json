@@ -50,10 +50,7 @@
         "laravel": {
             "providers": [
                 "Synio\\GmailServiceAccountMailDriver\\GmailServiceAccountMailDriverServiceProvider"
-            ],
-            "aliases": {
-                "GmailServiceAccountMailDriver": "Synio\\GmailServiceAccountMailDriver\\Facades\\GmailServiceAccountMailDriver"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",

@@ -2,19 +2,44 @@
 
 namespace Synio\GmailServiceAccountMailDriver\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Google\Client;
+use Google\Service\Gmail;
+use Mockery;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Synio\GmailServiceAccountMailDriver\GmailServiceAccountMailDriverServiceProvider;
 
 class TestCase extends Orchestra
 {
+    protected Client $apiClientMock;
+    protected Gmail $gmailServiceMock;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Synio\\GmailServiceAccountMailDriver\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
+        /** @var MockInterface */
+        $this->apiClientMock = Mockery::mock(Client::class, [
+            'setSubject' => null,
+        ]);
+
+        /** @var MockInterface */
+        $this->gmailServiceMock = Mockery::mock(Gmail::class, [
+            'getClient' => $this->apiClientMock,
+        ]);
+
+        /** @var MockInterface */
+        $userMessagesMock = Mockery::mock(UsersMessages::class);
+        $userMessagesMock->shouldReceive('send')->byDefault();
+
+        $this->gmailServiceMock->users_messages = $userMessagesMock;
+
+        config()->set('services.gmail_service_account.google_application_credentials', 'tests/data/test.json');
+        config()->set('mail.default', 'gmail-service-account');
+        config()->set('mail.mailers.gmail-service-account', [
+            'transport' => 'gmail-service-account',
+            'api_client' => $this->apiClientMock,
+            'gmail_service' => $this->gmailServiceMock,
+        ]);
     }
 
     protected function getPackageProviders($app)
@@ -22,15 +47,5 @@ class TestCase extends Orchestra
         return [
             GmailServiceAccountMailDriverServiceProvider::class,
         ];
-    }
-
-    public function getEnvironmentSetUp($app)
-    {
-        config()->set('database.default', 'testing');
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_laravel-gmail-service-account-mail-driver_table.php.stub';
-        $migration->up();
-        */
     }
 }

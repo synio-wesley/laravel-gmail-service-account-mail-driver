@@ -1,22 +1,6 @@
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
-
 # Use GMail API to send mails from any user/mailbox of your Workspace organization using a service account without needing separate mailbox credentials
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/synio/laravel-gmail-service-account-mail-driver.svg?style=flat-square)](https://packagist.org/packages/synio/laravel-gmail-service-account-mail-driver)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/synio/laravel-gmail-service-account-mail-driver/run-tests?label=tests)](https://github.com/synio/laravel-gmail-service-account-mail-driver/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/synio/laravel-gmail-service-account-mail-driver/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/synio/laravel-gmail-service-account-mail-driver/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/synio/laravel-gmail-service-account-mail-driver.svg?style=flat-square)](https://packagist.org/packages/synio/laravel-gmail-service-account-mail-driver)
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-gmail-service-account-mail-driver.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-gmail-service-account-mail-driver)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+This Laravel package adds a mail driver for the GMail API using a service account. This makes it possible to send mails using the actual mailbox of any user/mailbox in your Google Workspace, without requiring additional App Passwords or other workarounds.
 
 ## Installation
 
@@ -26,38 +10,50 @@ You can install the package via composer:
 composer require synio/laravel-gmail-service-account-mail-driver
 ```
 
-You can publish and run the migrations with:
+Before you can use this package, you need to configure the following in Google Cloud Platform Console:
 
-```bash
-php artisan vendor:publish --tag="laravel-gmail-service-account-mail-driver-migrations"
-php artisan migrate
-```
+- Enable GMail API for a project
+- Create service account user
+- Create JSON type key for this service account user
+- Download and save the generated JSON file
+- Write down the `client_id` (or take it from inside the JSON file)
 
-You can publish the config file with:
+And then you have to configure 'Domain wide delegation' in Google Workspace Admin:
 
-```bash
-php artisan vendor:publish --tag="laravel-gmail-service-account-mail-driver-config"
-```
+- Go to *Security -> API controls -> Domain wide delegation -> Manage domain wide delegation*
+- Add new API client
+  - Input the Client ID you wrote down
+  - Input the following OAuth scope: `https://www.googleapis.com/auth/gmail.send`
+  - Confirm by clicking on *Authorize*
 
-This is the contents of the published config file:
+After that, you should put the JSON file somewhere and you should let the package know the path in one of the following ways:
+
+- Define `GMAIL_SERVICE_ACCOUNT_GOOGLE_APPLICATION_CREDENTIALS` in your `.env` file. The value should be a filename relative to the root directory of your app, or an absolute path
+- Alternatively, you can also update your `services.php` config file, and add something like this:
+
+    ```php
+        'gmail_service_account' => [
+            'google_application_credentials' => '/path-to-json-file',
+        ],
+    ```
+
+You also have to add the mailer configuration to your `mail.php` config file:
 
 ```php
-return [
-];
-```
+    'mailers' => [
+        // ...Existing mailers here...
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-gmail-service-account-mail-driver-views"
+        'gmail-service-account' => [
+            'transport' => 'gmail-service-account',
+        ],
+    ],
 ```
 
 ## Usage
 
-```php
-$gmailServiceAccountMailDriver = new Synio\GmailServiceAccountMailDriver();
-echo $gmailServiceAccountMailDriver->echoPhrase('Hello, Synio!');
-```
+To enable this mail driver globally by default, you can set `MAIL_MAILER` to `gmail-service-account` in your `.env` file.
+
+Any mails sent using the `gmail-service-account` driver using the Laravel framework (`Mail` facade or `Mailables` for example) will now be sent using the configured GMail service account.
 
 ## Testing
 
@@ -69,18 +65,9 @@ composer test
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
 ## Credits
 
 - [Wesley Stessens](https://github.com/synio-wesley)
-- [All Contributors](../../contributors)
 
 ## License
 
