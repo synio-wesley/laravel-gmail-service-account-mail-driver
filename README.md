@@ -10,6 +10,10 @@ You can install the package via composer:
 composer require synio/laravel-gmail-service-account-mail-driver
 ```
 
+### Setup at Google
+
+*I initially used [this guide](https://ebstalimited.zendesk.com/hc/en-us/articles/360017031473-How-to-a-create-a-Gmail-service-account) with screenshots to perform these operations. It might help you out better.*
+
 Before you can use this package, you need to configure the following in Google Cloud Platform Console:
 
 - Enable GMail API for a project
@@ -26,7 +30,9 @@ And then you have to configure 'Domain wide delegation' in Google Workspace Admi
   - Input the following OAuth scope: `https://www.googleapis.com/auth/gmail.send`
   - Confirm by clicking on *Authorize*
 
-After that, you should put the JSON file somewhere and you should let the package know the path in one of the following ways:
+### Setup in your app
+
+After you downloaded a JSON type key file, you should put the JSON file somewhere and you should let the package know the path in one of the following ways:
 
 - Define `GMAIL_SERVICE_ACCOUNT_GOOGLE_APPLICATION_CREDENTIALS` in your `.env` file. The value should be a filename relative to the root directory of your app, or an absolute path
 - Alternatively, you can also update your `services.php` config file, and add something like this:
