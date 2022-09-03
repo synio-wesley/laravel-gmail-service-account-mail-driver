@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/synio/laravel-gmail-service-account-mail-driver.svg?style=flat)](https://packagist.org/packages/synio/laravel-gmail-service-account-mail-driver)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/synio-wesley/laravel-gmail-service-account-mail-driver/run-tests?label=tests&style=flat)](https://github.com/synio-wesley/laravel-gmail-service-account-mail-driver/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![License](https://img.shields.io/github/license/synio-wesley/laravel-gmail-service-account-mail-driver.svg?style=flat)](https://github.com/synio-wesley/laravel-gmail-service-account-mail-driver/blob/main/LICENSE.md)
-[![Total Downloads](https://img.shields.io/packagist/dt/synio/laravel-gmail-service-account-mail-driver.svg?style=flat-square)](https://packagist.org/packages/synio/laravel-gmail-service-account-mail-driver)
+[![Total Downloads](https://img.shields.io/packagist/dt/synio/laravel-gmail-service-account-mail-driver.svg?style=flat)](https://packagist.org/packages/synio/laravel-gmail-service-account-mail-driver)
 
 This Laravel package adds a mail driver for the GMail API using a service account. This makes it possible to send mails using the actual mailbox of any user/mailbox in your Google Workspace, without requiring additional App Passwords or other workarounds.
 
