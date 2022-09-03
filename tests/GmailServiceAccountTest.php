@@ -19,7 +19,9 @@ it('throws exception when auth config path not set correctly', function () {
 it('throws exception when invalid grant exception is thrown by google api', function () {
     $this->gmailServiceMock->users_messages
         ->shouldReceive('send')
-        ->andThrow(InvalidGrantException::class);
+        ->andThrow(new \Google\Service\Exception(json_encode([
+            'error' => 'invalid_grant',
+        ]), 400));
 
     Mail::raw('Test body', function ($message) {
         $message->from('john@doe.com', 'John Doe');
