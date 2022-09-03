@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 Initial release
+## 0.1.1 Reduced PHP version
 
 Reduced minimum PHP version from 8.1 to 8.0.
 
