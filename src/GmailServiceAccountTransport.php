@@ -7,6 +7,7 @@ use Google\Service\Gmail;
 use Google\Service\Gmail\Message;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
+use Symfony\Component\Mime\Message as MimeMessage;
 use Symfony\Component\Mime\MessageConverter;
 use Synio\GmailServiceAccountMailDriver\Exceptions\AuthConfigNotFoundException;
 use Synio\GmailServiceAccountMailDriver\Exceptions\InvalidGrantException;
@@ -60,8 +61,17 @@ class GmailServiceAccountTransport extends AbstractTransport
 
         $this->apiClient->setSubject($userToImpersonate);
 
+        $rawMessage = $message->toString();
+        $originalMessage = $message->getOriginalMessage();
+        if ($originalMessage instanceof MimeMessage) {
+            $bccHeader = $originalMessage->getHeaders()->get('bcc');
+            if ($bccHeader !== null && !empty($bccHeader->toString())) {
+                $rawMessage = "{$bccHeader->toString()}\r\n{$rawMessage}";
+            }
+        }
+
         $gmailMessage = new Message();
-        $gmailMessage->setRaw(rtrim(strtr(base64_encode($message->toString()), '+/', '-_'), '='));
+        $gmailMessage->setRaw(rtrim(strtr(base64_encode($rawMessage), '+/', '-_'), '='));
 
         try {
             $this->gmailService->users_messages->send($userToImpersonate, $gmailMessage);
