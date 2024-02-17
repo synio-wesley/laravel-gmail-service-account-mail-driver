@@ -1,7 +1,7 @@
 # Use GMail API to send mails from any user/mailbox of your Workspace organization using a service account without needing separate mailbox credentials
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/synio/laravel-gmail-service-account-mail-driver.svg?style=flat)](https://packagist.org/packages/synio/laravel-gmail-service-account-mail-driver)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/synio-wesley/laravel-gmail-service-account-mail-driver/run-tests?label=tests&style=flat)](https://github.com/synio-wesley/laravel-gmail-service-account-mail-driver/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/synio-wesley/laravel-gmail-service-account-mail-driver/run-tests.yml?branch=main&label=tests&style=flat)](https://github.com/synio-wesley/laravel-gmail-service-account-mail-driver/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![License](https://img.shields.io/github/license/synio-wesley/laravel-gmail-service-account-mail-driver.svg?style=flat)](https://github.com/synio-wesley/laravel-gmail-service-account-mail-driver/blob/main/LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/synio/laravel-gmail-service-account-mail-driver.svg?style=flat)](https://packagist.org/packages/synio/laravel-gmail-service-account-mail-driver)
 
